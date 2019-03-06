@@ -1,0 +1,2 @@
+common-obj-y += usr_wxx.o
+
