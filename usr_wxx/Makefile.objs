@@ -1,0 +1,4 @@
+ifeq ($(CONFIG_USR_WXX),y)
+common-obj-y += usr_wxx.o
+endif
+
