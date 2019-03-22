@@ -1,0 +1,4 @@
+ifeq ($(CONFIG_USR_CUST),y)
+common-obj-y += usr_cust.o
+endif
+

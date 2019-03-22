@@ -107,7 +107,7 @@ common-obj-y += audio/
 common-obj-m += audio/
 common-obj-y += hw/
 
-common-obj-y += usr_wxx/
+common-obj-y += usr_cust/
 
 common-obj-y += replay/
 
