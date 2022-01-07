@@ -3,6 +3,32 @@
 # The idea is to add the tap device to the same bridge
 # as we have default routing to.
 
+# config for in container environment
+if [ -f "/var/.indocker" ]; then
+	VETH=`ip route | awk '/default/ {print $5}'`
+	TAP=$1
+
+	mkdir -p /var/share
+	# vm host is in container
+	touch /var/share/.hostindocker
+
+	# get container eth0 network config
+	echo "ipaddress `ifconfig $VETH | awk '/inet/ {print $2}'`" > /var/share/net.cfg
+	echo "netmask `ifconfig $VETH | awk '/netmask/ {print $4}'`" >> /var/share/net.cfg
+	echo "gateway `ip route | awk '/default/ {print $3}'`" >> /var/share/net.cfg
+	# get container dns config
+	cp /etc/resolv.conf /var/share/resolv.conf
+
+	ip link set $TAP up
+
+	ip addr flush dev $VETH
+	tc qdisc add dev $VETH ingress
+	tc qdisc add dev $TAP ingress
+	tc filter add dev $VETH parent ffff: protocol all u32 match u8 0 0 action mirred egress redirect dev $TAP
+	tc filter add dev $TAP parent ffff: protocol all u32 match u8 0 0 action mirred egress redirect dev $VETH
+	exit 0
+fi
+
 # in order to be able to find brctl
 PATH=$PATH:/sbin:/usr/sbin
 ip=$(which ip)

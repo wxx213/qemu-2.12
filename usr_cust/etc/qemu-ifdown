@@ -4,3 +4,7 @@
 # for example, accounting info here.
 
 :
+
+if [ -f "/var/.indocker" ]; then
+	exit 0
+fi
